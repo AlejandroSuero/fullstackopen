@@ -12,15 +12,20 @@ const Button = ({ text, handleClick }) => {
   return <button onClick={handleClick}>{text}</button>
 }
 
-const checkRandomQuote = (prevQuote, randomQuote, length) => {
-  if (randomQuote === prevQuote) {
-    if (randomQuote + 1 >= length){
-      if (randomQuote - 1 < 0) return prevQuote + 1
-      return prevQuote - 1
+const checkRandomAnecdote = (prevAnecdote, randomAnecdote, length) => {
+  if (randomAnecdote === prevAnecdote) {
+    if (randomAnecdote + 1 >= length){
+      if (randomAnecdote - 1 < 0) return prevAnecdote + 1
+      return prevAnecdote - 1
     }
-    return randomQuote + 1
+    return randomAnecdote + 1
   }
-  return randomQuote
+  return randomAnecdote
+}
+
+const MostVotedAnecdote = ({votes, anecdotes}) => {
+  const mostVotedIndex = votes.indexOf(Math.max(...votes))
+  return <Anecdote anecdote={anecdotes[mostVotedIndex]} votes={votes[mostVotedIndex]} />
 }
 
 const App = () => {
@@ -38,10 +43,10 @@ const App = () => {
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))
 
-  const handleNextQuoteClick = () => {
-    const randomQuote = Math.floor(Math.random() * anecdotes.length)
-    setSelected(prevQuote => {
-      return checkRandomQuote(prevQuote, randomQuote, anecdotes.length)
+  const handleNextAnecdoteClick = () => {
+    const randomAnecdote = Math.floor(Math.random() * anecdotes.length)
+    setSelected(prevAnecdote => {
+      return checkRandomAnecdote(prevAnecdote, randomAnecdote, anecdotes.length)
     })
   }
   const handleVoteClick = () => {
@@ -52,9 +57,12 @@ const App = () => {
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <Anecdote anecdote={anecdotes[selected]} votes={votes[selected]} />
       <Button text={"vote"} handleClick={handleVoteClick} />
-      <Button text={'next anecdote'} handleClick={handleNextQuoteClick} />
+      <Button text={'next anecdote'} handleClick={handleNextAnecdoteClick} />
+      <h1>Anecdote with most votes</h1>
+      <MostVotedAnecdote anecdotes={anecdotes} votes={votes} />
     </div>
   )
 }
